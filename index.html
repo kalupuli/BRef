@@ -13,6 +13,7 @@
   --ink:#16191C; --ink-2:#5B6269; --line:#CDD2CC; --line-strong:#A5ACA4;
   --wunsch:#AE3019; --wunsch-bg:#FAE7E2; --wunsch-line:#D98B7A;
   --ausweich:#1F5C7A; --ausweich-bg:#E1EDF3; --ausweich-line:#7FADC4;
+  --ok:#2C6E49; --ok-bg:#E2EFE6;
   --shadow:0 1px 0 rgba(0,0,0,.06);
   --hatch:rgba(0,0,0,.055);
   --load-1:#E7EAE6; --load-2:#DBDFDA; --load-3:#CCD1CB; --load-chip:#E7EAE6;
@@ -23,6 +24,7 @@
     --ink:#E9ECE9; --ink-2:#98A1A8; --line:#333A40; --line-strong:#4C555C;
     --wunsch:#EE7F66; --wunsch-bg:#3A201A; --wunsch-line:#7E4034;
     --ausweich:#7FBCDA; --ausweich-bg:#16303D; --ausweich-line:#356176;
+    --ok:#7FC49B; --ok-bg:#1B2E23;
     --shadow:0 1px 0 rgba(0,0,0,.4);
     --hatch:rgba(255,255,255,.05);
     --load-1:#23282D; --load-2:#2A3036; --load-3:#333A41; --load-chip:#272D33;
@@ -33,6 +35,7 @@
   --ink:#E9ECE9; --ink-2:#98A1A8; --line:#333A40; --line-strong:#4C555C;
   --wunsch:#EE7F66; --wunsch-bg:#3A201A; --wunsch-line:#7E4034;
   --ausweich:#7FBCDA; --ausweich-bg:#16303D; --ausweich-line:#356176;
+  --ok:#7FC49B; --ok-bg:#1B2E23;
   --shadow:0 1px 0 rgba(0,0,0,.4);
   --hatch:rgba(255,255,255,.05);
   --load-1:#23282D; --load-2:#2A3036; --load-3:#333A41; --load-chip:#272D33;
@@ -42,7 +45,7 @@
 html,body{margin:0;padding:0}
 body{
   background:var(--paper); color:var(--ink);
-  font-family:"Barlow", "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family:"Barlow","Segoe UI",Helvetica,Arial,sans-serif;
   font-size:16px; line-height:1.45; -webkit-text-size-adjust:100%;
 }
 h1,h2,h3{margin:0; font-weight:600; line-height:1.15}
@@ -50,9 +53,6 @@ button{font:inherit; color:inherit}
 a{color:var(--ausweich)}
 :focus-visible{outline:2px solid var(--wunsch); outline-offset:2px}
 
-.cond{font-family:"Barlow Condensed","Barlow","Segoe UI",sans-serif; font-weight:600; letter-spacing:.01em}
-
-/* ---------- shell ---------- */
 .screen{display:none}
 .screen.is-active{display:block}
 
@@ -70,7 +70,6 @@ a{color:var(--ausweich)}
 
 .wrap{padding:clamp(.8rem,3vw,1.6rem); max-width:1500px; margin:0 auto}
 
-/* ---------- gate / name ---------- */
 .entry{min-height:100svh; display:flex; align-items:center; justify-content:center; padding:1.2rem}
 .entry-card{
   width:min(30rem,100%); background:var(--surface); border:1px solid var(--line);
@@ -98,14 +97,19 @@ input::placeholder{color:var(--ink-2); opacity:.7}
 .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line-strong)}
 .btn.ghost:hover{background:var(--surface-2); opacity:1}
 .btn.send{background:var(--wunsch); border-color:var(--wunsch); color:#fff}
+.btn.tiny{padding:.28rem .6rem; font-size:.82rem}
 .btn[disabled]{opacity:.45; cursor:not-allowed}
 .row-actions{display:flex; gap:.6rem; align-items:center; margin-top:1.1rem; flex-wrap:wrap}
 .note{font-size:.88rem; color:var(--ink-2); margin-top:1.1rem}
 .msg{margin-top:.8rem; font-size:.92rem; padding:.5rem .7rem; border-left:3px solid var(--wunsch); background:var(--wunsch-bg); color:var(--ink)}
 .msg:empty{display:none}
-.msg.ok{border-color:var(--ausweich); background:var(--ausweich-bg)}
+.msg.ok{border-color:var(--ok); background:var(--ok-bg)}
 
-/* ---------- toolbar ---------- */
+.status{font-size:.82rem; color:var(--ink-2); display:inline-flex; align-items:center; gap:.35rem}
+.status i{width:.6rem; height:.6rem; border-radius:50%; background:var(--line-strong); display:inline-block}
+.status.on i{background:var(--ok)}
+.status.off i{background:var(--wunsch)}
+
 .tools{
   display:flex; flex-wrap:wrap; gap:.8rem 1.2rem; align-items:center;
   padding:.75rem clamp(.8rem,3vw,1.6rem);
@@ -113,10 +117,7 @@ input::placeholder{color:var(--ink-2); opacity:.7}
   position:sticky; top:0; z-index:25;
 }
 .seg{display:flex; border:1px solid var(--line-strong); background:var(--surface)}
-.seg button{
-  display:flex; align-items:center; gap:.45rem; padding:.5rem .85rem;
-  background:transparent; border:0; cursor:pointer; font-weight:500;
-}
+.seg button{display:flex; align-items:center; gap:.45rem; padding:.5rem .85rem; background:transparent; border:0; cursor:pointer; font-weight:500}
 .seg button + button{border-left:1px solid var(--line-strong)}
 .seg button[aria-pressed="true"]{color:#fff}
 .seg button[data-mode="wunsch"][aria-pressed="true"]{background:var(--wunsch)}
@@ -129,7 +130,6 @@ input::placeholder{color:var(--ink-2); opacity:.7}
 .count{font-size:.9rem; color:var(--ink-2)}
 .count b{color:var(--ink)}
 
-/* ---------- plan table ---------- */
 .scroller{overflow-x:auto; border:1px solid var(--line); background:var(--surface)}
 table.plan{border-collapse:collapse; width:100%; min-width:46rem; table-layout:fixed}
 table.plan.compact{min-width:34rem}
@@ -142,19 +142,19 @@ table.plan thead th{
 table.plan thead th .d{display:block; font-family:"Barlow",sans-serif; font-weight:400; font-size:.82rem; color:var(--ink-2)}
 th.time, th.corner{
   width:7.2rem; background:var(--surface-2); text-align:left; font-weight:500;
-  font-size:.88rem; padding:.5rem; white-space:nowrap;
-  position:sticky; left:0; z-index:6;
+  font-size:.88rem; padding:.5rem; white-space:nowrap; position:sticky; left:0; z-index:6;
 }
 table.plan.compact th.time, table.plan.compact th.corner{width:5.6rem; font-size:.8rem}
 thead th.corner{z-index:8}
 td.cell{height:3.1rem; background:var(--surface)}
 table.plan.compact td.cell{height:2.3rem}
-td.block{
+td.block, td.closed{
   background:var(--block); color:var(--ink-2); font-size:.84rem;
   background-image:repeating-linear-gradient(135deg,transparent 0 7px,var(--hatch) 7px 8px);
 }
-td.block span{display:block; padding:.45rem .5rem}
-td.closed{background:var(--block); background-image:repeating-linear-gradient(135deg,transparent 0 7px,var(--hatch) 7px 8px)}
+td.block > span{display:block; padding:.45rem .5rem}
+td.block.locked > span:first-child{color:var(--ink); font-weight:600}
+.stale{display:block; padding:0 .5rem .4rem; font-size:.76rem; color:var(--ink-2)}
 
 button.slot{
   display:flex; justify-content:space-between; align-items:flex-start; gap:.3rem;
@@ -179,11 +179,16 @@ button.slot .plus{opacity:.5}
 button.slot[data-pick="wunsch"] .tag{color:var(--wunsch)}
 button.slot[data-pick="ausweich"] .tag{color:var(--ausweich)}
 
+button.slot.manage .tag{display:block}
+button.slot.manage.blocked{
+  background:var(--block); color:var(--ink); font-weight:600;
+  background-image:repeating-linear-gradient(135deg,transparent 0 7px,var(--hatch) 7px 8px);
+}
+
 td.view{padding:.3rem .45rem; font-size:.86rem}
 td.view.wunsch{background:var(--wunsch-bg); box-shadow:inset 4px 0 0 var(--wunsch); color:var(--wunsch); font-weight:600}
 td.view.ausweich{background:var(--ausweich-bg); box-shadow:inset 4px 0 0 var(--ausweich); color:var(--ausweich); font-weight:600}
 
-/* overview chips */
 td.overview{padding:.25rem}
 .chip{
   display:block; font-size:.78rem; line-height:1.25; padding:.16rem .3rem .16rem .42rem;
@@ -194,45 +199,37 @@ td.overview{padding:.25rem}
 .chip.ausweich{border-left-color:var(--ausweich); background:var(--ausweich-bg)}
 .chip:last-child{margin-bottom:0}
 
-/* ---------- admin ---------- */
-.tabs{display:flex; gap:0; border-bottom:1px solid var(--line); margin-bottom:1.1rem; flex-wrap:wrap}
-.tabs button{
-  padding:.6rem 1rem; background:transparent; border:0; border-bottom:3px solid transparent;
-  cursor:pointer; font-weight:500; color:var(--ink-2);
-}
+.tabs{display:flex; border-bottom:1px solid var(--line); margin-bottom:1.1rem; flex-wrap:wrap}
+.tabs button{padding:.6rem 1rem; background:transparent; border:0; border-bottom:3px solid transparent; cursor:pointer; font-weight:500; color:var(--ink-2)}
 .tabs button[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--wunsch)}
 .legend{display:flex; gap:1.1rem; flex-wrap:wrap; font-size:.88rem; color:var(--ink-2); margin:.9rem 0 1rem}
 .legend span{display:inline-flex; align-items:center; gap:.4rem}
 .legend i{width:.8rem; height:.8rem; display:inline-block; border:1px solid var(--line-strong)}
 .legend i.w{background:var(--wunsch)} .legend i.a{background:var(--ausweich)}
 .legend i.b{background:var(--block); background-image:repeating-linear-gradient(135deg,transparent 0 5px,var(--hatch) 5px 6px)}
+.legend i.g{background:var(--load-2)}
 
 .people{display:grid; gap:1.1rem; grid-template-columns:repeat(auto-fill,minmax(min(100%,26rem),1fr))}
 .person{border:1px solid var(--line); background:var(--surface)}
-.person header{
-  display:flex; align-items:baseline; gap:.6rem; flex-wrap:wrap;
-  padding:.6rem .7rem; border-bottom:1px solid var(--line); background:var(--surface-2);
-}
+.person header{display:flex; align-items:baseline; gap:.6rem; flex-wrap:wrap; padding:.6rem .7rem; border-bottom:1px solid var(--line); background:var(--surface-2)}
 .person header .nm{font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:1.2rem}
 .person header .meta{font-size:.82rem; color:var(--ink-2)}
 .person header .spacer{flex:1 1 auto}
-.btn.tiny{padding:.28rem .6rem; font-size:.82rem}
-.linkbtn{background:none; border:0; padding:.15rem .2rem; cursor:pointer; font-size:.82rem; color:var(--ink-2); text-decoration:underline}
-.linkbtn:hover{color:var(--wunsch)}
 .empty{padding:2.2rem 1rem; text-align:center; color:var(--ink-2); border:1px dashed var(--line-strong); background:var(--surface)}
 
-.banner{
-  padding:.55rem clamp(.8rem,3vw,1.6rem); font-size:.9rem;
-  background:var(--wunsch-bg); border-bottom:1px solid var(--wunsch-line); color:var(--ink);
-}
+.banner{padding:.55rem clamp(.8rem,3vw,1.6rem); font-size:.9rem; background:var(--wunsch-bg); border-bottom:1px solid var(--wunsch-line); color:var(--ink)}
 .banner:empty{display:none}
+#fatal{position:fixed; left:0; right:0; bottom:0; z-index:99; background:var(--wunsch); color:#fff; padding:.6rem 1rem; font-size:.85rem; display:none}
+
+.blockbar{display:flex; flex-wrap:wrap; gap:.7rem; align-items:flex-end; margin-bottom:1rem}
+.blockbar .f{flex:1 1 16rem; min-width:0}
 
 @media (max-width:640px){
   th.time, th.corner{width:5.4rem; font-size:.8rem}
   table.plan{min-width:40rem}
 }
 @media print{
-  .bar, .tools, .tabs, .banner, .no-print{display:none !important}
+  .bar, .tools, .tabs, .banner, .no-print, .blockbar{display:none !important}
   body{background:#fff}
   .scroller{overflow:visible; border-color:#999}
   .people{grid-template-columns:1fr 1fr}
@@ -243,7 +240,9 @@ td.overview{padding:.25rem}
 </head>
 <body>
 
-<!-- ============ 1. Zugang ============ -->
+<div id="fatal"></div>
+
+<!-- 1. Zugang -->
 <section id="s-gate" class="screen is-active">
   <div class="entry">
     <div class="entry-card">
@@ -254,7 +253,8 @@ td.overview{padding:.25rem}
       <label class="field" for="pw">Zugangspasswort</label>
       <input id="pw" type="password" autocomplete="off" placeholder="Passwort eingeben">
       <div class="row-actions">
-        <button class="btn" id="pw-go">Weiter</button>
+        <button class="btn" id="pw-go" type="button">Weiter</button>
+        <span class="status" id="gate-status"><i></i><span>Speicher wird geprüft …</span></span>
       </div>
       <div class="msg" id="pw-msg" role="status"></div>
       <p class="note">Tragen Sie Ihre Wunsch- und Ausweichtermine für die Prüfungsvorbereitung ein.</p>
@@ -262,7 +262,7 @@ td.overview{padding:.25rem}
   </div>
 </section>
 
-<!-- ============ 2. Name ============ -->
+<!-- 2. Name -->
 <section id="s-name" class="screen">
   <div class="entry">
     <div class="entry-card">
@@ -272,87 +272,107 @@ td.overview{padding:.25rem}
       <label class="field" for="nm">Vor- und Nachname</label>
       <input id="nm" type="text" autocomplete="name" placeholder="z. B. Lukas Lienhard">
       <div class="row-actions">
-        <button class="btn" id="nm-go">Zum Stundenplan</button>
-        <button class="btn ghost" id="nm-back">Zurück</button>
+        <button class="btn" id="nm-go" type="button">Zum Stundenplan</button>
+        <button class="btn ghost" id="nm-back" type="button">Zurück</button>
       </div>
       <div class="msg" id="nm-msg" role="status"></div>
     </div>
   </div>
 </section>
 
-<!-- ============ 3. Stundenplan ============ -->
+<!-- 3. Stundenplan -->
 <section id="s-plan" class="screen">
   <div class="bar">
     <span class="title">Prüfungsvorbereitung HLFS</span>
     <span class="week">22. – 26.02.2027</span>
     <span class="spacer"></span>
     <span class="who">Eintragung für <b id="plan-name"></b></span>
-    <button class="btn ghost no-print" id="plan-exit">Abmelden</button>
+    <button class="btn ghost no-print" id="plan-exit" type="button">Abmelden</button>
   </div>
   <div class="banner" id="plan-banner"></div>
   <div class="tools">
     <div class="seg" role="group" aria-label="Terminart wählen">
-      <button data-mode="wunsch" aria-pressed="true"><span class="swatch"></span>Wunschtermin</button>
-      <button data-mode="ausweich" aria-pressed="false"><span class="swatch"></span>Ausweichtermin</button>
+      <button data-mode="wunsch" aria-pressed="true" type="button"><span class="swatch"></span>Wunschtermin</button>
+      <button data-mode="ausweich" aria-pressed="false" type="button"><span class="swatch"></span>Ausweichtermin</button>
     </div>
     <span class="hint">Zeitfenster anklicken, um es als gewählte Terminart einzutragen. Erneutes Klicken entfernt den Eintrag. Die graue Zahl zeigt, wie viele andere dieses Fenster bereits als Wunschtermin haben.</span>
     <span class="count" id="plan-count"></span>
-    <button class="btn send" id="plan-send">Absenden</button>
+    <button class="btn send" id="plan-send" type="button">Absenden</button>
   </div>
   <div class="wrap">
     <div class="msg" id="plan-msg" role="status"></div>
     <div class="scroller"><div id="plan-grid"></div></div>
-    <p class="note">Schraffierte Flächen sind feste Programmpunkte und nicht wählbar. Je dunkler ein freies Feld grau hinterlegt ist, desto mehr Wunschtermine anderer liegen dort bereits vor. Mit „Absenden“ wird die Eingabe abgeschlossen und gesperrt.</p>
+    <p class="note">Schraffierte Flächen sind feste Programmpunkte oder von der Lehrgangsleitung gesperrt und nicht wählbar. Je dunkler ein freies Feld grau hinterlegt ist, desto mehr Wunschtermine anderer liegen dort bereits vor.</p>
   </div>
 </section>
 
-<!-- ============ 4. Bestätigung ============ -->
+<!-- 4. Bestätigung -->
 <section id="s-done" class="screen">
   <div class="bar">
     <span class="title">Prüfungsvorbereitung HLFS</span>
     <span class="week">22. – 26.02.2027</span>
     <span class="spacer"></span>
     <span class="who">Eingabe von <b id="done-name"></b></span>
-    <button class="btn ghost no-print" id="done-exit">Abmelden</button>
+    <button class="btn ghost no-print" id="done-exit" type="button">Abmelden</button>
   </div>
   <div class="wrap">
     <div class="msg ok" id="done-msg">Ihre Terminwünsche wurden übermittelt. Die Eingabe ist abgeschlossen.</div>
     <div class="legend">
       <span><i class="w"></i>Wunschtermin</span>
       <span><i class="a"></i>Ausweichtermin</span>
-      <span><i class="b"></i>fester Programmpunkt</span>
+      <span><i class="b"></i>fest belegt / gesperrt</span>
     </div>
     <div class="scroller"><div id="done-grid"></div></div>
     <div class="row-actions no-print">
-      <button class="btn ghost" id="done-new">Weitere Person eintragen</button>
-      <button class="btn ghost" id="done-print">Drucken</button>
+      <button class="btn ghost" id="done-new" type="button">Weitere Person eintragen</button>
+      <button class="btn ghost" id="done-print" type="button">Drucken</button>
     </div>
   </div>
 </section>
 
-<!-- ============ 5. Admin ============ -->
+<!-- 5. Admin -->
 <section id="s-admin" class="screen">
   <div class="bar">
     <span class="title">Terminabfrage – Auswertung</span>
     <span class="week">22. – 26.02.2027</span>
     <span class="spacer"></span>
     <span class="who"><b id="admin-count">0</b> Eintragungen</span>
-    <button class="btn ghost no-print" id="admin-print">Drucken</button>
-    <button class="btn ghost no-print" id="admin-exit">Abmelden</button>
+    <button class="btn ghost no-print" id="admin-print" type="button">Drucken</button>
+    <button class="btn ghost no-print" id="admin-exit" type="button">Abmelden</button>
   </div>
   <div class="banner" id="admin-banner"></div>
   <div class="wrap">
     <div class="tabs" role="tablist">
-      <button role="tab" aria-selected="true" data-tab="overview">Gesamtübersicht</button>
-      <button role="tab" aria-selected="false" data-tab="people">Einzelpläne</button>
+      <button role="tab" aria-selected="true" data-tab="overview" type="button">Gesamtübersicht</button>
+      <button role="tab" aria-selected="false" data-tab="people" type="button">Einzelpläne</button>
+      <button role="tab" aria-selected="false" data-tab="blocks" type="button">Zeiten sperren</button>
     </div>
-    <div class="legend">
-      <span><i class="w"></i>Wunschtermin</span>
-      <span><i class="a"></i>Ausweichtermin</span>
-      <span><i class="b"></i>fester Programmpunkt</span>
+
+    <div id="tab-overview">
+      <div class="legend">
+        <span><i class="w"></i>Wunschtermin</span>
+        <span><i class="a"></i>Ausweichtermin</span>
+        <span><i class="b"></i>fest belegt / gesperrt</span>
+      </div>
+      <div class="scroller"><div id="admin-grid"></div></div>
     </div>
-    <div id="admin-overview"><div class="scroller"><div id="admin-grid"></div></div></div>
-    <div id="admin-people" style="display:none"><div class="people" id="people-list"></div></div>
+
+    <div id="tab-people" style="display:none">
+      <div class="people" id="people-list"></div>
+    </div>
+
+    <div id="tab-blocks" style="display:none">
+      <div class="blockbar">
+        <div class="f">
+          <label class="field" for="block-title">Bezeichnung der Sperrung</label>
+          <input id="block-title" type="text" value="Gesperrt" placeholder="z. B. Vortrag, Besprechung, Fahrt">
+        </div>
+        <button class="btn ghost" id="block-clear" type="button">Alle Sperrungen aufheben</button>
+      </div>
+      <p class="note" style="margin-top:0">Freies Zeitfenster anklicken, um es mit der eingetragenen Bezeichnung zu sperren – es erscheint dann für alle wie „Mittagessen“ oder „Frühstück“ und ist nicht mehr wählbar. Ein Klick auf ein gesperrtes Feld hebt die Sperrung wieder auf.</p>
+      <div class="scroller"><div id="block-grid"></div></div>
+      <div class="msg" id="block-msg" role="status"></div>
+    </div>
   </div>
 </section>
 
@@ -360,11 +380,23 @@ td.overview{padding:.25rem}
 (function(){
 "use strict";
 
-/* ---------------- Konfiguration ---------------- */
+/* ============================================================
+   KONFIGURATION
+   ============================================================
+   API_URL: Adresse des Google-Apps-Script-Webservices (endet auf /exec).
+   Bleibt das Feld leer, speichert die Seite nur lokal im Browser
+   des jeweiligen Geräts – ein Austausch zwischen Geräten ist dann
+   nicht möglich.
+   ============================================================ */
+var API_URL = "https://script.google.com/macros/s/AKfycbxJYvidR7g5dAkJq6wem7Inmgva2-SL0ImBC7_FNi8BmVs9KIHQQiSNx247zyw6-duAww/exec";
+
 var PW_USER  = "HLFS_2027_Bref";
 var PW_ADMIN = "Admin_HLFS";
-var LS_KEY   = "hlfs27.session";
-var LS_LOCAL = "hlfs27.local";
+
+var LS_KEY    = "hlfs27.session";
+var LS_LOCAL  = "hlfs27.local";
+var LS_BLOCKS = "hlfs27.blocks";
+var POLL_MS   = 12000;
 
 var DAYS = [
   {key:"mo", label:"Montag",     date:"22.02."},
@@ -398,54 +430,126 @@ function esc(s){
   });
 }
 function slotKey(r,d){ return r + "_" + d; }
-function newId(){
-  return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-}
+function newId(){ return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function fmtTime(iso){
   if(!iso) return "";
   var d = new Date(iso);
-  if(isNaN(d)) return "";
+  if(isNaN(d.getTime())) return "";
   var p = function(n){ return (n<10?"0":"") + n; };
   return p(d.getDate()) + "." + p(d.getMonth()+1) + "." + d.getFullYear() + ", " + p(d.getHours()) + ":" + p(d.getMinutes());
 }
-function say(el, text, ok){
-  el.textContent = text || "";
-  el.className = "msg" + (ok ? " ok" : "");
-}
+function say(el, text, ok){ el.textContent = text || ""; el.className = "msg" + (ok ? " ok" : ""); }
+function lsGet(k){ try{ return window.localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ window.localStorage.setItem(k,v); }catch(e){} }
+function lsDel(k){ try{ window.localStorage.removeItem(k); }catch(e){} }
 
-/* ---------------- Speicher (db mit lokalem Rückfall) ---------------- */
+window.onerror = function(msg){
+  var f = $("fatal");
+  f.style.display = "block";
+  f.textContent = "Technischer Fehler: " + msg + " – bitte Seite neu laden.";
+};
+
+/* ---------------- Speicher ----------------
+   Drei Betriebsarten:
+   "api"    – gemeinsamer Speicher über den Webservice (API_URL)
+   "claude" – gemeinsamer Speicher innerhalb von Claude
+   "local"  – nur im Browser dieses Geräts
+-------------------------------------------- */
 var Store = {
-  db: null,
-  mode: "pending",          // pending | shared | local
+  mode: "local",
+  claudeDb: null,
   _ready: null,
 
   init: function(){
     if(this._ready) return this._ready;
     var self = this;
     this._ready = new Promise(function(resolve){
-      if(!(window.claude && typeof window.claude.use === "function")){
-        self.mode = "local"; return resolve();
+      if(API_URL){ self.mode = "api"; return resolve(); }
+      if(window.claude && typeof window.claude.use === "function"){
+        var done = false;
+        var finish = function(m, db){ if(done) return; done = true; self.mode = m; self.claudeDb = db || null; resolve(); };
+        setTimeout(function(){ finish("local"); }, 6000);      // Notbremse: nie hängen bleiben
+        try{
+          window.claude.use("db").then(
+            function(db){ finish(db ? "claude" : "local", db); },
+            function(){ finish("local"); }
+          );
+        }catch(e){ finish("local"); }
+        return;
       }
-      window.claude.use("db").then(function(db){
-        if(db){ self.db = db; self.mode = "shared"; }
-        else { self.mode = "local"; }
-        resolve();
-      }, function(){ self.mode = "local"; resolve(); });
+      self.mode = "local";
+      resolve();
     });
     return this._ready;
   },
 
+  label: function(){
+    if(this.mode === "api")    return {cls:"on",  txt:"Gemeinsamer Speicher aktiv"};
+    if(this.mode === "claude") return {cls:"on",  txt:"Gemeinsamer Speicher aktiv"};
+    return {cls:"off", txt:"Nur dieses Gerät (kein Server hinterlegt)"};
+  },
+
+  /* --- API-Hilfsfunktionen --- */
+  _get: function(){
+    return fetch(API_URL + "?t=" + Date.now(), {method:"GET"}).then(function(r){
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    });
+  },
+  _post: function(payload){
+    // bewusst ohne eigene Header -> kein CORS-Preflight
+    return fetch(API_URL, {method:"POST", body:JSON.stringify(payload)}).then(function(r){
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    });
+  },
+
+  /* --- lesen --- */
+  load: function(){
+    var self = this;
+    return this.init().then(function(){
+      if(self.mode === "api"){
+        return self._get().then(function(d){
+          return {entries: d.entries || [], blocks: d.blocks || {}};
+        });
+      }
+      if(self.mode === "claude"){
+        return Promise.all([
+          self.claudeDb.collection("submissions").get(),
+          self.claudeDb.collection("config").get()
+        ]).then(function(res){
+          var entries = res[0].docs.map(function(doc){
+            var v = doc.data() || {};
+            return {id:doc.id, name:v.name || "(ohne Namen)", picks:v.picks || {}, submittedAt:v.submittedAt || ""};
+          });
+          var blocks = {};
+          res[1].docs.forEach(function(doc){
+            if(doc.id === "blocks") blocks = (doc.data() || {}).blocks || {};
+          });
+          return {entries:entries, blocks:blocks};
+        });
+      }
+      var all = {};
+      try{ all = JSON.parse(lsGet(LS_LOCAL) || "{}"); }catch(e){ all = {}; }
+      var list = [];
+      for(var k in all){ if(Object.prototype.hasOwnProperty.call(all,k)) list.push(all[k]); }
+      var b = {};
+      try{ b = JSON.parse(lsGet(LS_BLOCKS) || "{}"); }catch(e){ b = {}; }
+      return {entries:list, blocks:b};
+    });
+  },
+
+  /* --- schreiben --- */
   save: function(entry){
     var self = this;
     return this.init().then(function(){
-      if(self.mode === "shared"){
-        return self.db.doc("submissions/" + entry.id).set({
-          name: entry.name, picks: entry.picks, submittedAt: entry.submittedAt
-        });
-      }
-      var all = self._local();
+      if(self.mode === "api") return self._post({action:"save", entry:entry});
+      if(self.mode === "claude") return self.claudeDb.doc("submissions/" + entry.id)
+        .set({name:entry.name, picks:entry.picks, submittedAt:entry.submittedAt});
+      var all = {};
+      try{ all = JSON.parse(lsGet(LS_LOCAL) || "{}"); }catch(e){ all = {}; }
       all[entry.id] = entry;
-      localStorage.setItem(LS_LOCAL, JSON.stringify(all));
+      lsSet(LS_LOCAL, JSON.stringify(all));
       return null;
     });
   },
@@ -453,86 +557,85 @@ var Store = {
   remove: function(id){
     var self = this;
     return this.init().then(function(){
-      if(self.mode === "shared") return self.db.doc("submissions/" + id).delete();
-      var all = self._local();
+      if(self.mode === "api") return self._post({action:"delete", id:id});
+      if(self.mode === "claude") return self.claudeDb.doc("submissions/" + id).delete();
+      var all = {};
+      try{ all = JSON.parse(lsGet(LS_LOCAL) || "{}"); }catch(e){ all = {}; }
       delete all[id];
-      localStorage.setItem(LS_LOCAL, JSON.stringify(all));
+      lsSet(LS_LOCAL, JSON.stringify(all));
       return null;
     });
   },
 
-  subscribe: function(onData, onError){
+  saveBlocks: function(blocks){
     var self = this;
-    var stopped = false, unsub = null;
-    this.init().then(function(){
-      if(stopped) return;
-      if(self.mode === "shared"){
-        unsub = self.db.collection("submissions").onSnapshot(function(snap){
-          onData(snap.docs.map(function(d){
-            var v = d.data() || {};
-            return {id:d.id, name:v.name || "(ohne Namen)", picks:v.picks || {}, submittedAt:v.submittedAt || ""};
-          }));
-        }, function(err){ if(onError) onError(err); });
-      } else {
-        var all = self._local(), list = [];
-        for(var k in all){ if(Object.prototype.hasOwnProperty.call(all,k)) list.push(all[k]); }
-        onData(list);
-      }
+    return this.init().then(function(){
+      if(self.mode === "api") return self._post({action:"blocks", blocks:blocks});
+      if(self.mode === "claude") return self.claudeDb.doc("config/blocks").set({blocks:blocks});
+      lsSet(LS_BLOCKS, JSON.stringify(blocks));
+      return null;
     });
-    return function(){ stopped = true; if(unsub) unsub(); };
-  },
-
-  _local: function(){
-    try { return JSON.parse(localStorage.getItem(LS_LOCAL) || "{}"); }
-    catch(e){ return {}; }
   }
 };
 
-/* ---------------- Stundenplan rendern ---------------- */
-/* mode: "edit" | "view" | "overview" */
-function buildTable(opts){
-  var mode = opts.mode, picks = opts.picks || {}, entries = opts.entries || [], counts = opts.counts || {};
-  var h = ['<table class="plan' + (opts.compact ? " compact" : "") + '">'];
+/* zyklisches Nachladen, solange ein Bildschirm es braucht */
+function startFeed(onData, onError){
+  var stopped = false, timer = null;
+  function tick(){
+    Store.load().then(function(state){
+      if(stopped) return;
+      onData(state);
+    }).catch(function(err){
+      if(!stopped && onError) onError(err);
+    }).then(function(){
+      if(!stopped && Store.mode !== "local") timer = setTimeout(tick, POLL_MS);
+    });
+  }
+  tick();
+  return function(){ stopped = true; if(timer) clearTimeout(timer); };
+}
 
-  h.push("<thead><tr>");
-  h.push('<th class="corner">Uhrzeit</th>');
-  DAYS.forEach(function(d){
-    h.push("<th>" + esc(d.label) + '<span class="d">' + esc(d.date) + "</span></th>");
-  });
+/* ---------------- Stundenplan rendern ----------------
+   mode: "edit" | "view" | "overview" | "manage"        */
+function buildTable(opts){
+  var mode    = opts.mode,
+      picks   = opts.picks   || {},
+      entries = opts.entries || [],
+      counts  = opts.counts  || {},
+      blocks  = opts.blocks  || {};
+
+  var h = ['<table class="plan' + (opts.compact ? " compact" : "") + '">'];
+  h.push('<thead><tr><th class="corner">Uhrzeit</th>');
+  DAYS.forEach(function(d){ h.push("<th>" + esc(d.label) + '<span class="d">' + esc(d.date) + "</span></th>"); });
   h.push("</tr></thead><tbody>");
 
   ROWS.forEach(function(r){
     h.push('<tr><th class="time">' + esc(r.time) + "</th>");
     DAYS.forEach(function(d, i){
       var fx = r.fixed[i];
-      if(fx === ""){
-        h.push('<td class="cell closed" aria-label="nicht verfügbar"></td>');
-        return;
-      }
-      if(fx){
-        h.push('<td class="cell block"><span>' + esc(fx) + "</span></td>");
-        return;
-      }
+      if(fx === ""){ h.push('<td class="cell closed" aria-label="nicht verfügbar"></td>'); return; }
+      if(fx){ h.push('<td class="cell block"><span>' + esc(fx) + "</span></td>"); return; }
+
       var key = slotKey(r.key, d.key);
-      var bl = blocks[key];
+      var bl  = blocks[key];
 
       if(mode === "manage"){
         h.push('<td class="cell"><button type="button" class="slot manage' + (bl ? " blocked" : "") + '" data-key="' + key + '"' +
-               ' aria-label="' + esc(r.time + " " + d.label + (bl ? " – gesperrt: " + bl : " – freigeben zum Sperren")) + '">' +
+               ' aria-label="' + esc(r.time + " " + d.label + (bl ? " – gesperrt: " + bl : " – sperren")) + '">' +
                '<span class="tag">' + (bl ? esc(bl) : '<span class="plus">sperren</span>') + "</span>" +
-               (bl ? '<span class="load">×</span>' : "") +
-               "</button></td>");
+               (bl ? '<span class="load">&times;</span>' : "") + "</button></td>");
         return;
       }
 
       if(bl){
         var extra = "";
         if(mode === "overview"){
+          var c = "";
           entries.forEach(function(e){
             var t = e.picks && e.picks[key];
-            if(t) extra += '<span class="chip ' + t + '" title="' + esc(e.name + " – " + LABEL[t] + " (gesperrt)") + '">' + esc(e.name) + "</span>";
+            if(t) c += '<span class="chip ' + t + '" title="' + esc(e.name + " – " + LABEL[t] + " (gesperrt)") + '">' + esc(e.name) + "</span>";
           });
-          extra = extra ? '<span class="stale">' + extra + "</span>" : "";
+          if(c) extra = '<span class="stale">' + c + "</span>";
         } else if(mode === "view" && picks[key]){
           extra = '<span class="stale">' + SHORT[picks[key]] + " – entfällt</span>";
         }
@@ -546,8 +649,7 @@ function buildTable(opts){
         var lvl = n === 0 ? "" : " load-" + (n > 3 ? 3 : n);
         h.push('<td class="cell"><button type="button" class="slot' + lvl + '" data-key="' + key + '"' +
                (p ? ' data-pick="' + p + '"' : "") +
-               ' aria-label="' + esc(r.time + " " + d.label + (p ? " – " + LABEL[p] : "") +
-                 (n ? " – " + n + " Wunschtermine anderer Personen" : "")) + '">' +
+               ' aria-label="' + esc(r.time + " " + d.label + (p ? " – " + LABEL[p] : "") + (n ? " – " + n + " Wunschtermine anderer" : "")) + '">' +
                '<span class="plus">+</span><span class="tag">' + (p ? SHORT[p] : "") + "</span>" +
                (n ? '<span class="load" title="' + n + ' andere Person(en) mit Wunschtermin">' + n + "</span>" : "") +
                "</button></td>");
@@ -578,18 +680,10 @@ function show(id){
 }
 
 /* ---------------- Sitzung ---------------- */
-var session = null;   // {id, name, picks, submitted, submittedAt}
-function loadSession(){
-  try { return JSON.parse(localStorage.getItem(LS_KEY) || "null"); }
-  catch(e){ return null; }
-}
-function saveSession(){
-  try { localStorage.setItem(LS_KEY, JSON.stringify(session)); } catch(e){}
-}
-function clearSession(){
-  session = null;
-  try { localStorage.removeItem(LS_KEY); } catch(e){}
-}
+var session = null;
+function loadSession(){ try{ return JSON.parse(lsGet(LS_KEY) || "null"); }catch(e){ return null; } }
+function saveSession(){ lsSet(LS_KEY, JSON.stringify(session)); }
+function clearSession(){ session = null; lsDel(LS_KEY); }
 
 /* ---------------- Zugang ---------------- */
 $("pw-go").addEventListener("click", checkPassword);
@@ -625,7 +719,7 @@ function startPlan(){
 }
 
 /* ---------------- Stundenplan (Eingabe) ---------------- */
-var mode = "wunsch";
+var mode = "wunsch", planCounts = {}, planBlocks = {}, planStop = null;
 
 Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function(b){
   b.addEventListener("click", function(){
@@ -636,42 +730,45 @@ Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function(
   });
 });
 
-var planCounts = {}, planUnsub = null;
-
 function openPlan(){
   $("plan-name").textContent = session.name;
-  planCounts = {};
+  planCounts = {}; planBlocks = {};
   renderPlanGrid();
   say($("plan-msg"),"");
   updateCount();
   show("s-plan");
+
   Store.init().then(function(){
     $("plan-banner").textContent = Store.mode === "local"
-      ? "Kein gemeinsamer Speicher verfügbar – die Eintragung wird nur auf diesem Gerät gesichert."
+      ? "Hinweis: Es ist kein gemeinsamer Speicher hinterlegt – die Eintragung bleibt nur auf diesem Gerät."
       : "";
   });
-  if(planUnsub) planUnsub();
-  planUnsub = Store.subscribe(function(list){
+
+  stopPlanFeed();
+  planStop = startFeed(function(state){
     var c = {};
-    list.forEach(function(e){
+    state.entries.forEach(function(e){
       if(!e || e.id === session.id || !e.picks) return;
-      for(var k in e.picks){
-        if(e.picks[k] === "wunsch") c[k] = (c[k] || 0) + 1;
-      }
+      for(var k in e.picks){ if(e.picks[k] === "wunsch") c[k] = (c[k] || 0) + 1; }
     });
-    var sig = JSON.stringify(c);
-    if(sig === JSON.stringify(planCounts)) return;
-    planCounts = c;
+    var sig = JSON.stringify(c) + "|" + JSON.stringify(state.blocks);
+    if(sig === JSON.stringify(planCounts) + "|" + JSON.stringify(planBlocks)) return;
+    planCounts = c; planBlocks = state.blocks || {};
+    dropBlockedPicks();
     renderPlanGrid();
+    updateCount();
+  }, function(){
+    $("plan-banner").textContent = "Verbindung zum Speicher gestört – Eintragung bitte trotzdem absenden, sie wird erneut versucht.";
   });
 }
-
-function stopPlanFeed(){
-  if(planUnsub){ planUnsub(); planUnsub = null; }
+function stopPlanFeed(){ if(planStop){ planStop(); planStop = null; } }
+function dropBlockedPicks(){
+  var changed = false;
+  for(var k in session.picks){ if(planBlocks[k]){ delete session.picks[k]; changed = true; } }
+  if(changed) saveSession();
 }
-
 function renderPlanGrid(){
-  $("plan-grid").innerHTML = buildTable({mode:"edit", picks:session.picks, counts:planCounts});
+  $("plan-grid").innerHTML = buildTable({mode:"edit", picks:session.picks, counts:planCounts, blocks:planBlocks});
 }
 
 $("plan-grid").addEventListener("click", function(e){
@@ -702,76 +799,65 @@ function updateCount(){
 
 $("plan-exit").addEventListener("click", function(){
   if(!confirm("Abmelden? Nicht abgesendete Eintragungen bleiben auf diesem Gerät gespeichert.")) return;
-  stopPlanFeed();
-  show("s-gate"); $("pw").focus();
+  stopPlanFeed(); show("s-gate"); $("pw").focus();
 });
 
 $("plan-send").addEventListener("click", function(){
-  var n = Object.keys(session.picks).length;
-  if(n === 0){ say($("plan-msg"), "Bitte wählen Sie mindestens ein Zeitfenster aus."); return; }
+  if(Object.keys(session.picks).length === 0){
+    say($("plan-msg"), "Bitte wählen Sie mindestens ein Zeitfenster aus."); return;
+  }
   var btn = $("plan-send");
-  btn.disabled = true;
-  btn.textContent = "Wird gesendet …";
-  session.submitted = true;
-  session.submittedAt = new Date().toISOString();
-  Store.save({id:session.id, name:session.name, picks:session.picks, submittedAt:session.submittedAt})
+  btn.disabled = true; btn.textContent = "Wird gesendet …";
+  var stamp = new Date().toISOString();
+  Store.save({id:session.id, name:session.name, picks:session.picks, submittedAt:stamp})
     .then(function(){
-      saveSession();
+      session.submitted = true; session.submittedAt = stamp; saveSession();
       btn.disabled = false; btn.textContent = "Absenden";
-      stopPlanFeed();
-      openDone();
+      stopPlanFeed(); openDone();
     })
     .catch(function(err){
-      session.submitted = false;
-      saveSession();
       btn.disabled = false; btn.textContent = "Absenden";
-      say($("plan-msg"), "Senden fehlgeschlagen (" + ((err && err.code) || "Fehler") + "). Bitte erneut versuchen.");
+      say($("plan-msg"), "Senden fehlgeschlagen (" + ((err && err.message) || "Fehler") + "). Bitte Internetverbindung prüfen und erneut versuchen.");
     });
 });
 
 /* ---------------- Bestätigung ---------------- */
 function openDone(){
   $("done-name").textContent = session.name;
-  $("done-grid").innerHTML = buildTable({mode:"view", picks:session.picks});
+  $("done-grid").innerHTML = buildTable({mode:"view", picks:session.picks, blocks:planBlocks});
   show("s-done");
 }
 $("done-new").addEventListener("click", function(){
-  clearSession();
-  $("nm").value = "";
-  say($("nm-msg"),"");
-  show("s-name");
-  $("nm").focus();
+  clearSession(); $("nm").value = ""; say($("nm-msg"),"");
+  show("s-name"); $("nm").focus();
+});
+$("done-exit").addEventListener("click", function(){
+  clearSession(); $("nm").value = ""; $("pw").value = "";
+  say($("nm-msg"),""); say($("pw-msg"),"");
+  show("s-gate"); $("pw").focus();
 });
 $("done-print").addEventListener("click", function(){ window.print(); });
-$("done-exit").addEventListener("click", function(){
-  clearSession();
-  $("nm").value = "";
-  $("pw").value = "";
-  say($("nm-msg"),"");
-  say($("pw-msg"),"");
-  show("s-gate");
-  $("pw").focus();
-});
 
 /* ---------------- Admin ---------------- */
-var adminUnsub = null, adminEntries = [], adminTab = "overview";
+var adminStop = null, adminEntries = [], adminBlocks = {}, adminTab = "overview";
 
 function openAdmin(){
   show("s-admin");
   renderAdmin();
   Store.init().then(function(){
     $("admin-banner").textContent = Store.mode === "local"
-      ? "Kein gemeinsamer Speicher verfügbar – es werden nur Eintragungen dieses Geräts angezeigt."
+      ? "Hinweis: Es ist kein gemeinsamer Speicher hinterlegt – angezeigt werden nur Eintragungen dieses Geräts."
       : "";
   });
-  if(adminUnsub) adminUnsub();
-  adminUnsub = Store.subscribe(function(list){
-    adminEntries = list.slice().sort(function(a,b){
+  if(adminStop) adminStop();
+  adminStop = startFeed(function(state){
+    adminEntries = state.entries.slice().sort(function(a,b){
       return String(a.name).localeCompare(String(b.name), "de");
     });
+    adminBlocks = state.blocks || {};
     renderAdmin();
   }, function(err){
-    $("admin-banner").textContent = "Daten konnten nicht geladen werden (" + ((err && err.code) || "Fehler") + ").";
+    $("admin-banner").textContent = "Daten konnten nicht geladen werden (" + ((err && err.message) || "Fehler") + ").";
   });
 }
 
@@ -781,14 +867,16 @@ Array.prototype.forEach.call(document.querySelectorAll(".tabs button"), function
     Array.prototype.forEach.call(document.querySelectorAll(".tabs button"), function(o){
       o.setAttribute("aria-selected", o === b ? "true" : "false");
     });
-    $("admin-overview").style.display = adminTab === "overview" ? "" : "none";
-    $("admin-people").style.display   = adminTab === "people"   ? "" : "none";
+    $("tab-overview").style.display = adminTab === "overview" ? "" : "none";
+    $("tab-people").style.display   = adminTab === "people"   ? "" : "none";
+    $("tab-blocks").style.display   = adminTab === "blocks"   ? "" : "none";
   });
 });
 
 function renderAdmin(){
   $("admin-count").textContent = adminEntries.length;
-  $("admin-grid").innerHTML = buildTable({mode:"overview", entries:adminEntries});
+  $("admin-grid").innerHTML = buildTable({mode:"overview", entries:adminEntries, blocks:adminBlocks});
+  $("block-grid").innerHTML = buildTable({mode:"manage", blocks:adminBlocks});
 
   var list = $("people-list");
   if(adminEntries.length === 0){
@@ -803,9 +891,9 @@ function renderAdmin(){
         '<span class="nm">' + esc(e.name) + "</span>" +
         '<span class="meta">' + w + " Wunsch · " + a + " Ausweich" + (e.submittedAt ? " · " + esc(fmtTime(e.submittedAt)) : "") + "</span>" +
         '<span class="spacer"></span>' +
-        '<button class="btn ghost tiny no-print" data-del="' + esc(e.id) + '">Person löschen</button>' +
+        '<button class="btn ghost tiny no-print" data-del="' + esc(e.id) + '" type="button">Person löschen</button>' +
       "</header>" +
-      '<div class="scroller">' + buildTable({mode:"view", picks:e.picks, compact:true}) + "</div>" +
+      '<div class="scroller">' + buildTable({mode:"view", picks:e.picks, blocks:adminBlocks, compact:true}) + "</div>" +
     "</article>";
   }).join("");
 }
@@ -815,24 +903,58 @@ $("people-list").addEventListener("click", function(e){
   if(!btn) return;
   var id = btn.getAttribute("data-del");
   var ent = adminEntries.filter(function(x){ return x.id === id; })[0];
-  if(!confirm("Eintragung von " + ((ent && ent.name) || "dieser Person") + " löschen?")) return;
+  if(!confirm("Eintragung von " + ((ent && ent.name) || "dieser Person") + " endgültig löschen?")) return;
+  btn.disabled = true;
   Store.remove(id).then(function(){
-    if(Store.mode === "local"){
-      adminEntries = adminEntries.filter(function(x){ return x.id !== id; });
-      renderAdmin();
-    }
+    adminEntries = adminEntries.filter(function(x){ return x.id !== id; });
+    renderAdmin();
+  }).catch(function(){
+    btn.disabled = false;
+    alert("Löschen fehlgeschlagen. Bitte erneut versuchen.");
   });
 });
 
+/* Zeiten sperren */
+$("block-grid").addEventListener("click", function(e){
+  var btn = e.target.closest ? e.target.closest("button.slot") : null;
+  if(!btn) return;
+  var key = btn.getAttribute("data-key");
+  var next = {};
+  for(var k in adminBlocks) next[k] = adminBlocks[k];
+  if(next[key]) delete next[key];
+  else next[key] = ($("block-title").value.trim() || "Gesperrt");
+  applyBlocks(next);
+});
+
+$("block-clear").addEventListener("click", function(){
+  if(!Object.keys(adminBlocks).length) return;
+  if(!confirm("Alle Sperrungen aufheben?")) return;
+  applyBlocks({});
+});
+
+function applyBlocks(next){
+  var prev = adminBlocks;
+  adminBlocks = next;
+  renderAdmin();
+  say($("block-msg"),"");
+  Store.saveBlocks(next).catch(function(){
+    adminBlocks = prev; renderAdmin();
+    say($("block-msg"), "Sperrung konnte nicht gespeichert werden. Bitte erneut versuchen.");
+  });
+}
+
 $("admin-print").addEventListener("click", function(){ window.print(); });
 $("admin-exit").addEventListener("click", function(){
-  if(adminUnsub){ adminUnsub(); adminUnsub = null; }
-  show("s-gate");
-  $("pw").focus();
+  if(adminStop){ adminStop(); adminStop = null; }
+  show("s-gate"); $("pw").focus();
 });
 
 /* ---------------- Start ---------------- */
-Store.init();
+Store.init().then(function(){
+  var s = Store.label(), el = $("gate-status");
+  el.className = "status " + s.cls;
+  el.querySelector("span").textContent = s.txt;
+});
 $("pw").focus();
 
 })();
