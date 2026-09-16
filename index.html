@@ -142,9 +142,10 @@ table.plan thead th{
 table.plan thead th .d{display:block; font-family:"Barlow",sans-serif; font-weight:400; font-size:.82rem; color:var(--ink-2)}
 th.time, th.corner{
   width:7.2rem; background:var(--surface-2); text-align:left; font-weight:500;
-  font-size:.88rem; padding:.5rem; white-space:nowrap; position:sticky; left:0; z-index:6;
+  font-size:.88rem; padding:.5rem; white-space:normal; position:sticky; left:0; z-index:6;
 }
 table.plan.compact th.time, table.plan.compact th.corner{width:5.6rem; font-size:.8rem}
+th.time .sub{display:block; font-weight:400; font-size:.78rem; color:var(--ink-2)}
 thead th.corner{z-index:8}
 td.cell{height:3.1rem; background:var(--surface)}
 table.plan.compact td.cell{height:2.3rem}
@@ -408,15 +409,14 @@ var DAYS = [
 
 /* fixed: null = buchbar, "" = nicht verfügbar, Text = fester Programmpunkt */
 var ROWS = [
-  {key:"r1", time:"06:45–07:30",  fixed:["Anreise","Frühstück","Frühstück","Frühstück","Frühstück"]},
-  {key:"r2", time:"07:35–09:20",  fixed:[null,null,null,null,null]},
-  {key:"r3", time:"09:40–12:00",  fixed:[null,null,null,null,null]},
-  {key:"r4", time:"12:00–13:00",  fixed:["Mittagessen","Mittagessen","Mittagessen","Mittagessen","Mittagessen"]},
-  {key:"r5", time:"13:00–14:30",  fixed:[null,null,null,null,"Abreise"]},
-  {key:"r6", time:"14:45–16:15",  fixed:[null,null,null,null,""]},
-  {key:"r7", time:"16:30–17:45",  fixed:[null,null,null,null,""]},
-  {key:"r8", time:"Abendessen",   fixed:["","","","",""]},
-  {key:"r9", time:"Abendprogramm",fixed:[null,null,null,null,""]}
+  {key:"t0645", time:"06:45–07:30",   fixed:["Anreise","Frühstück","Frühstück","Frühstück","Frühstück"]},
+  {key:"t0740", time:"07:40–09:20",   fixed:[null,null,null,null,null]},
+  {key:"t0940", time:"09:40–12:15",   fixed:[null,null,null,null,null]},
+  {key:"t1215", time:"12:15–13:10",   fixed:["Mittagessen","Mittagessen","Mittagessen","Mittagessen","Mittagessen"]},
+  {key:"t1310", time:"13:10–15:55",   fixed:[null,null,null,null,"Abreise"]},
+  {key:"t1600", time:"16:00",  sub:"flexibel", fixed:[null,null,null,null,""]},
+  {key:"abendessen",   time:"Abendessen",    fixed:["","","","",""]},
+  {key:"abendprogr",   time:"Abendprogramm", sub:"ab 18:00", fixed:[null,null,null,null,""]}
 ];
 
 var LABEL = {wunsch:"Wunschtermin", ausweich:"Ausweichtermin"};
@@ -610,7 +610,8 @@ function buildTable(opts){
   h.push("</tr></thead><tbody>");
 
   ROWS.forEach(function(r){
-    h.push('<tr><th class="time">' + esc(r.time) + "</th>");
+    h.push('<tr><th class="time">' + esc(r.time) +
+           (r.sub ? '<span class="sub">' + esc(r.sub) + "</span>" : "") + "</th>");
     DAYS.forEach(function(d, i){
       var fx = r.fixed[i];
       if(fx === ""){ h.push('<td class="cell closed" aria-label="nicht verfügbar"></td>'); return; }
