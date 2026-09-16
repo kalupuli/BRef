@@ -15,6 +15,7 @@
   --ausweich:#1F5C7A; --ausweich-bg:#E1EDF3; --ausweich-line:#7FADC4;
   --shadow:0 1px 0 rgba(0,0,0,.06);
   --hatch:rgba(0,0,0,.055);
+  --load-1:#E7EAE6; --load-2:#DBDFDA; --load-3:#CCD1CB; --load-chip:#E7EAE6;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -24,6 +25,7 @@
     --ausweich:#7FBCDA; --ausweich-bg:#16303D; --ausweich-line:#356176;
     --shadow:0 1px 0 rgba(0,0,0,.4);
     --hatch:rgba(255,255,255,.05);
+    --load-1:#23282D; --load-2:#2A3036; --load-3:#333A41; --load-chip:#272D33;
   }
 }
 :root[data-theme="dark"]{
@@ -33,6 +35,7 @@
   --ausweich:#7FBCDA; --ausweich-bg:#16303D; --ausweich-line:#356176;
   --shadow:0 1px 0 rgba(0,0,0,.4);
   --hatch:rgba(255,255,255,.05);
+  --load-1:#23282D; --load-2:#2A3036; --load-3:#333A41; --load-chip:#272D33;
 }
 
 *{box-sizing:border-box}
@@ -154,10 +157,18 @@ td.block span{display:block; padding:.45rem .5rem}
 td.closed{background:var(--block); background-image:repeating-linear-gradient(135deg,transparent 0 7px,var(--hatch) 7px 8px)}
 
 button.slot{
-  display:block; width:100%; height:100%; min-height:3.1rem; padding:.3rem .45rem;
+  display:flex; justify-content:space-between; align-items:flex-start; gap:.3rem;
+  width:100%; height:100%; min-height:3.1rem; padding:.3rem .45rem;
   background:transparent; border:0; cursor:pointer; text-align:left; font-size:.86rem; color:var(--ink-2);
 }
 button.slot:hover{background:var(--surface-2)}
+button.slot.load-1{background:var(--load-1)}
+button.slot.load-2{background:var(--load-2)}
+button.slot.load-3{background:var(--load-3)}
+button.slot .load{
+  flex:0 0 auto; font-size:.74rem; font-weight:600; line-height:1.25;
+  padding:.05rem .3rem; color:var(--ink-2); background:var(--load-chip); border:1px solid var(--line);
+}
 button.slot .tag{display:none}
 button.slot[data-pick="wunsch"], button.slot[data-pick="ausweich"]{color:var(--ink); font-weight:600}
 button.slot[data-pick="wunsch"]{background:var(--wunsch-bg); box-shadow:inset 4px 0 0 var(--wunsch)}
@@ -205,6 +216,7 @@ td.overview{padding:.25rem}
 .person header .nm{font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:1.2rem}
 .person header .meta{font-size:.82rem; color:var(--ink-2)}
 .person header .spacer{flex:1 1 auto}
+.btn.tiny{padding:.28rem .6rem; font-size:.82rem}
 .linkbtn{background:none; border:0; padding:.15rem .2rem; cursor:pointer; font-size:.82rem; color:var(--ink-2); text-decoration:underline}
 .linkbtn:hover{color:var(--wunsch)}
 .empty{padding:2.2rem 1rem; text-align:center; color:var(--ink-2); border:1px dashed var(--line-strong); background:var(--surface)}
@@ -283,14 +295,14 @@ td.overview{padding:.25rem}
       <button data-mode="wunsch" aria-pressed="true"><span class="swatch"></span>Wunschtermin</button>
       <button data-mode="ausweich" aria-pressed="false"><span class="swatch"></span>Ausweichtermin</button>
     </div>
-    <span class="hint">Zeitfenster anklicken, um es als gewählte Terminart einzutragen. Erneutes Klicken entfernt den Eintrag.</span>
+    <span class="hint">Zeitfenster anklicken, um es als gewählte Terminart einzutragen. Erneutes Klicken entfernt den Eintrag. Die graue Zahl zeigt, wie viele andere dieses Fenster bereits als Wunschtermin haben.</span>
     <span class="count" id="plan-count"></span>
     <button class="btn send" id="plan-send">Absenden</button>
   </div>
   <div class="wrap">
     <div class="msg" id="plan-msg" role="status"></div>
     <div class="scroller"><div id="plan-grid"></div></div>
-    <p class="note">Graue Flächen sind feste Programmpunkte und nicht wählbar. Mit „Absenden“ wird die Eingabe abgeschlossen und gesperrt.</p>
+    <p class="note">Schraffierte Flächen sind feste Programmpunkte und nicht wählbar. Je dunkler ein freies Feld grau hinterlegt ist, desto mehr Wunschtermine anderer liegen dort bereits vor. Mit „Absenden“ wird die Eingabe abgeschlossen und gesperrt.</p>
   </div>
 </section>
 
@@ -479,7 +491,7 @@ var Store = {
 /* ---------------- Stundenplan rendern ---------------- */
 /* mode: "edit" | "view" | "overview" */
 function buildTable(opts){
-  var mode = opts.mode, picks = opts.picks || {}, entries = opts.entries || [];
+  var mode = opts.mode, picks = opts.picks || {}, entries = opts.entries || [], counts = opts.counts || {};
   var h = ['<table class="plan' + (opts.compact ? " compact" : "") + '">'];
 
   h.push("<thead><tr>");
@@ -502,13 +514,43 @@ function buildTable(opts){
         return;
       }
       var key = slotKey(r.key, d.key);
+      var bl = blocks[key];
+
+      if(mode === "manage"){
+        h.push('<td class="cell"><button type="button" class="slot manage' + (bl ? " blocked" : "") + '" data-key="' + key + '"' +
+               ' aria-label="' + esc(r.time + " " + d.label + (bl ? " – gesperrt: " + bl : " – freigeben zum Sperren")) + '">' +
+               '<span class="tag">' + (bl ? esc(bl) : '<span class="plus">sperren</span>') + "</span>" +
+               (bl ? '<span class="load">×</span>' : "") +
+               "</button></td>");
+        return;
+      }
+
+      if(bl){
+        var extra = "";
+        if(mode === "overview"){
+          entries.forEach(function(e){
+            var t = e.picks && e.picks[key];
+            if(t) extra += '<span class="chip ' + t + '" title="' + esc(e.name + " – " + LABEL[t] + " (gesperrt)") + '">' + esc(e.name) + "</span>";
+          });
+          extra = extra ? '<span class="stale">' + extra + "</span>" : "";
+        } else if(mode === "view" && picks[key]){
+          extra = '<span class="stale">' + SHORT[picks[key]] + " – entfällt</span>";
+        }
+        h.push('<td class="cell block locked"><span>' + esc(bl) + "</span>" + extra + "</td>");
+        return;
+      }
 
       if(mode === "edit"){
         var p = picks[key];
-        h.push('<td class="cell"><button type="button" class="slot" data-key="' + key + '"' +
+        var n = counts[key] || 0;
+        var lvl = n === 0 ? "" : " load-" + (n > 3 ? 3 : n);
+        h.push('<td class="cell"><button type="button" class="slot' + lvl + '" data-key="' + key + '"' +
                (p ? ' data-pick="' + p + '"' : "") +
-               ' aria-label="' + esc(r.time + " " + d.label + (p ? " – " + LABEL[p] : "")) + '">' +
-               '<span class="plus">+</span><span class="tag">' + (p ? SHORT[p] : "") + "</span></button></td>");
+               ' aria-label="' + esc(r.time + " " + d.label + (p ? " – " + LABEL[p] : "") +
+                 (n ? " – " + n + " Wunschtermine anderer Personen" : "")) + '">' +
+               '<span class="plus">+</span><span class="tag">' + (p ? SHORT[p] : "") + "</span>" +
+               (n ? '<span class="load" title="' + n + ' andere Person(en) mit Wunschtermin">' + n + "</span>" : "") +
+               "</button></td>");
       } else if(mode === "view"){
         var v = picks[key];
         h.push('<td class="cell view' + (v ? " " + v : "") + '">' + (v ? SHORT[v] : "") + "</td>");
@@ -594,9 +636,12 @@ Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function(
   });
 });
 
+var planCounts = {}, planUnsub = null;
+
 function openPlan(){
   $("plan-name").textContent = session.name;
-  $("plan-grid").innerHTML = buildTable({mode:"edit", picks:session.picks});
+  planCounts = {};
+  renderPlanGrid();
   say($("plan-msg"),"");
   updateCount();
   show("s-plan");
@@ -605,6 +650,28 @@ function openPlan(){
       ? "Kein gemeinsamer Speicher verfügbar – die Eintragung wird nur auf diesem Gerät gesichert."
       : "";
   });
+  if(planUnsub) planUnsub();
+  planUnsub = Store.subscribe(function(list){
+    var c = {};
+    list.forEach(function(e){
+      if(!e || e.id === session.id || !e.picks) return;
+      for(var k in e.picks){
+        if(e.picks[k] === "wunsch") c[k] = (c[k] || 0) + 1;
+      }
+    });
+    var sig = JSON.stringify(c);
+    if(sig === JSON.stringify(planCounts)) return;
+    planCounts = c;
+    renderPlanGrid();
+  });
+}
+
+function stopPlanFeed(){
+  if(planUnsub){ planUnsub(); planUnsub = null; }
+}
+
+function renderPlanGrid(){
+  $("plan-grid").innerHTML = buildTable({mode:"edit", picks:session.picks, counts:planCounts});
 }
 
 $("plan-grid").addEventListener("click", function(e){
@@ -635,6 +702,7 @@ function updateCount(){
 
 $("plan-exit").addEventListener("click", function(){
   if(!confirm("Abmelden? Nicht abgesendete Eintragungen bleiben auf diesem Gerät gespeichert.")) return;
+  stopPlanFeed();
   show("s-gate"); $("pw").focus();
 });
 
@@ -650,6 +718,7 @@ $("plan-send").addEventListener("click", function(){
     .then(function(){
       saveSession();
       btn.disabled = false; btn.textContent = "Absenden";
+      stopPlanFeed();
       openDone();
     })
     .catch(function(err){
@@ -734,7 +803,7 @@ function renderAdmin(){
         '<span class="nm">' + esc(e.name) + "</span>" +
         '<span class="meta">' + w + " Wunsch · " + a + " Ausweich" + (e.submittedAt ? " · " + esc(fmtTime(e.submittedAt)) : "") + "</span>" +
         '<span class="spacer"></span>' +
-        '<button class="linkbtn no-print" data-del="' + esc(e.id) + '">löschen</button>' +
+        '<button class="btn ghost tiny no-print" data-del="' + esc(e.id) + '">Person löschen</button>' +
       "</header>" +
       '<div class="scroller">' + buildTable({mode:"view", picks:e.picks, compact:true}) + "</div>" +
     "</article>";
